@@ -79,3 +79,9 @@ JDK的Atomic包里提供`AtomicStampedReference`来解决ABA问题。这个类�
 
 ### 3.只能保证一个共享变量的原子操作
 当对一个额共享变量执行操作时，可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性。
+
+
+参考文档：          
+ 1. [Java并发编程-无锁CAS与Unsafe类及其并发包Atomic](https://blog.csdn.net/javazejian/article/details/72772470)
+ 2. [深入解析Java AtomicInteger原子类型](https://juejin.im/post/5c22e5f46fb9a049f1543d0e)
+ 3. [Atomic*实现原理](https://juejin.im/post/5b9e5279f265da0af7750c3f)
