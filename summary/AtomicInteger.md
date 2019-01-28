@@ -34,8 +34,6 @@ private static final Unsafe unsafe = Unsafe.getUnsafe();
 public final int getAndIncrement() {
     return unsafe.getAndAddInt(this, valueOffset, 1);
 }
-
-
 ```
 Unsafe.java
 ```java
@@ -55,7 +53,7 @@ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, 
 ```
 从源码中可以看到，`getAndIncrement`调用`Unsafe`类中的方法来实现功能。   
 
-`Unsafe`中的方法`getAndInt()`的循环体主要做了三件事：
+`Unsafe`中的方法`getAndAddInt()`的循环体主要做了三件事：
 1. 获取当前值。 （通过volatile关键字保证可见性）
 2. 计算出目标值：
 3. 进行CAS操作，如果成功则跳出循环，如果失败则重复上述步骤。     
@@ -70,7 +68,7 @@ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, 
 
 ## 处理器是如何实现原子操作的（TODO）
 
-## CAS实现原子操作代来的问题
+## CAS实现原子操作带来的问题
 ### 1.ABA问题
 因为CAS需要在操作值的时候，检查值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。   
 ABA问题多的解决思路是使用版本号。在变量前追加上版本号，每次变量更新的时候把版本号加1，那么`A→B→C`就会变成`1A→2B→3C`。         
