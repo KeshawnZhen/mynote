@@ -1,4 +1,4 @@
-#AtomicInteger理解
+# AtomicInteger理解
 
 在进行并发编程的时候我们需要确保程序在被多个线程并发访问时可以得到正确的结果，也就是实现线程安全。
 
@@ -68,7 +68,7 @@ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, 
 > sun.misc.Unsafe是JDK内部用的工具类。它通过暴露一些Java意义上说“不安全”的功能给Java层代码，来让JDK能够更多的使用Java代码来实现一些原本是平台相关的、需要使用native语言（例如C或C++）才可以实现的功能。该类不应该在JDK核心类库之外使用。
 
 
-## 处理器是如何实现原子操作的
+## 处理器是如何实现原子操作的（TODO）
 
 ## CAS实现原子操作代来的问题
 ### 1.ABA问题
