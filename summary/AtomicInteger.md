@@ -67,6 +67,18 @@ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, 
 
 
 ## 处理器是如何实现原子操作的（TODO）
+### 基础知识
+|名称|英文|解释
+|:--|:-:|:--|
+|缓存行|Cache Line|缓存的最小操作单位
+|比较并交换| Compare And Swap| CAS操作需要输入两个数值，一个旧值（期望操作前的值）和一个新值，在操作期间先比较旧值有没有发生变化，如果没有发生变化，才交换成新值，发生了变化则不交换
+|CPU流水线| CPU piple | CPU流水线的工作方式像工业生产线上的装配流水线，在CPU中由5~6个不同功能的电路单元组成一条指令处理流水线，然后将一条X86指令分成5~6步后在由这些电路单元分布执行，这样就能实现在一个CPU时钟周期完成一条指令，因此提高CPU的运算速度
+|内存顺序冲突| Memory order violation| 内存顺序冲突一般是有假共享引起的，假共享是指多个CPU同时修改同一个缓存行的不同部分而引起其中一个CPU的操作无效，当出现这个内存顺序冲突时，CPU必须清空流水线
+
+## 总线锁保证原子性
+
+## 缓存锁保证原子性
+
 
 ## CAS实现原子操作带来的问题
 ### 1.ABA问题
@@ -85,3 +97,4 @@ JDK的Atomic包里提供`AtomicStampedReference`来解决ABA问题。这个类�
  1. [Java并发编程-无锁CAS与Unsafe类及其并发包Atomic](https://blog.csdn.net/javazejian/article/details/72772470)
  2. [深入解析Java AtomicInteger原子类型](https://juejin.im/post/5c22e5f46fb9a049f1543d0e)
  3. [Atomic*实现原理](https://juejin.im/post/5b9e5279f265da0af7750c3f)
+ 4. [伪共享](https://www.cnblogs.com/cyfonly/p/5800758.html)
