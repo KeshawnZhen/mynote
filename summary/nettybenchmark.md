@@ -1,4 +1,4 @@
-# Netty Benchmark
+# 网络通信库 Benchmark
 
 ## 环境
 百度云1核2G
@@ -10,7 +10,74 @@ uname -a
 Linux 4.4.0-141-generic #167-Ubuntu SMP Wed Dec 5 10:40:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
-## 1 thread
+## libuv
+第一次
+```
+1751679 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 8.65ms; mean 0.051ms; std: 0.011ms (21.41%)
+Latency distribution: 25% under 0.045ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.075ms; 99.99% under 0.25ms
+Requests/sec: 58389.3
+Transfer/sec: 55.68MiB
+```
+第二次
+```
+1736091 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 8.36ms; mean 0.051ms; std: 0.014ms (26.83%)
+Latency distribution: 25% under 0.045ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.078ms; 99.99% under 0.324ms
+Requests/sec: 57869.7
+Transfer/sec: 55.19MiB
+```
+第三次
+```
+1776545 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 8.59ms; mean 0.051ms; std: 0.011ms (21.03%)
+Latency distribution: 25% under 0.045ms; 50% under 0.05ms; 75% under 0.055ms; 90% under 0.058ms; 99% under 0.067ms; 99.99% under 0.193ms
+Requests/sec: 59218.17
+Transfer/sec: 56.47MiB
+```
+
+## libco
+第一次
+```
+1709739 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 7.37ms; mean 0.051ms; std: 0.012ms (23.44%)
+Latency distribution: 25% under 0.045ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.075ms; 99.99% under 0.321ms
+Requests/sec: 56991.3
+Transfer/sec: 54.35MiB
+```
+第二次
+```
+1744872 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 7.86ms; mean 0.051ms; std: 0.01ms (19.42%)
+Latency distribution: 25% under 0.045ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.074ms; 99.99% under 0.309ms
+Requests/sec: 58162.4
+Transfer/sec: 55.47MiB
+```
+第三次
+```
+1678365 0.98KiB messages in 30 seconds
+Latency: min 0.01ms; max 7.36ms; mean 0.052ms; std: 0.014ms (27.98%)
+Latency distribution: 25% under 0.046ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.081ms; 99.99% under 0.329ms
+Requests/sec: 55945.5
+Transfer/sec: 53.35MiB
+```
+
+## python3 + uvloop
+第一次
+```
+
+```
+第二次
+```
+
+```
+第三次
+```
+
+```
+
+
+## Netty 1 thread
 第一次
 ```
 1482424 0.98KiB messages in 30 seconds
@@ -37,7 +104,7 @@ Transfer/sec: 45.34MiB
 
 ```
 
-## 2 thread
+## Netty 2 thread
 第一次
 ```
 1426814 0.98KiB messages in 30 seconds
@@ -62,3 +129,4 @@ Latency distribution: 25% under 0.053ms; 50% under 0.059ms; 75% under 0.065ms; 9
 Requests/sec: 47474.57
 Transfer/sec: 45.28MiB
 ```
+
