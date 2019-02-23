@@ -76,6 +76,31 @@ Transfer/sec: 53.35MiB
 
 ```
 
+## boost.asio
+第一次
+```
+1426941 0.98KiB messages in 30 seconds
+Latency: min 0.02ms; max 8.06ms; mean 0.061ms; std: 0.017ms (28.32%)
+Latency distribution: 25% under 0.055ms; 50% under 0.061ms; 75% under 0.066ms; 90% under 0.069ms; 99% under 0.088ms; 99.99% under 0.353ms
+Requests/sec: 47564.7
+Transfer/sec: 45.36MiB
+```
+第二次
+```
+1433938 0.98KiB messages in 30 seconds
+Latency: min 0.02ms; max 7.18ms; mean 0.061ms; std: 0.017ms (28.39%)
+Latency distribution: 25% under 0.055ms; 50% under 0.061ms; 75% under 0.066ms; 90% under 0.069ms; 99% under 0.085ms; 99.99% under 0.354ms
+Requests/sec: 47797.93
+Transfer/sec: 45.58MiB
+```
+第三次
+```
+1426918 0.98KiB messages in 30 seconds
+Latency: min 0.02ms; max 7.52ms; mean 0.061ms; std: 0.025ms (40.57%)
+Latency distribution: 25% under 0.055ms; 50% under 0.061ms; 75% under 0.066ms; 90% under 0.069ms; 99% under 0.08ms; 99.99% under 0.435ms
+Requests/sec: 47563.93
+Transfer/sec: 45.36MiB
+```
 
 ## Netty 1 thread
 第一次
