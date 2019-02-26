@@ -35,6 +35,23 @@ Latency distribution: 25% under 0.045ms; 50% under 0.05ms; 75% under 0.055ms; 90
 Requests/sec: 59218.17
 Transfer/sec: 56.47MiB
 ```
+10kb
+```
+1581419 10.0KiB messages in 30 seconds
+Latency: min 0.02ms; max 7.47ms; mean 0.052ms; std: 0.014ms (26.65%)
+Latency distribution: 25% under 0.046ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.06ms; 99% under 0.086ms; 99.99% under 0.344ms
+Requests/sec: 52713.97
+Transfer/sec: 514.78MiB
+```
+
+100kb
+```
+455640 100.0KiB messages in 30 seconds
+Latency: min 0.05ms; max 7.52ms; mean 0.194ms; std: 0.037ms (18.99%)
+Latency distribution: 25% under 0.185ms; 50% under 0.191ms; 75% under 0.198ms; 90% under 0.207ms; 99% under 0.28ms; 99.99% under 1.112ms
+Requests/sec: 15188.0
+Transfer/sec: 1483.2MiB
+```
 
 ## libco
 第一次
@@ -61,19 +78,88 @@ Latency distribution: 25% under 0.046ms; 50% under 0.051ms; 75% under 0.056ms; 9
 Requests/sec: 55945.5
 Transfer/sec: 53.35MiB
 ```
+10kb
+```
+1535979 10.0KiB messages in 30 seconds
+Latency: min 0.02ms; max 8.21ms; mean 0.052ms; std: 0.012ms (23.58%)
+Latency distribution: 25% under 0.046ms; 50% under 0.051ms; 75% under 0.056ms; 90% under 0.059ms; 99% under 0.087ms; 99.99% under 0.339ms
+Requests/sec: 51199.3
+Transfer/sec: 499.99MiB
+```
+100kb
+```
+2381 100.0KiB messages in 30 seconds
+Latency: min 0.07ms; max 43.78ms; mean 37.775ms; std: 9.061ms (23.99%)
+Latency distribution: 25% under 39.852ms; 50% under 39.944ms; 75% under 40.064ms; 90% under 40.115ms; 99% under 40.209ms; 99.99% under 43.785ms
+Requests/sec: 79.37
+Transfer/sec: 7.75MiB
+```
 
 ## python3 + uvloop
 第一次
 ```
+will connect to: ('127.0.0.1', 25000)
+Sending 200000 messages
+Sending 200000 messages
+Sending 200000 messages
+600000 in 15.040270805358887
+39892.89872268912 requests/sec
+
+---
+983184 0.98KiB messages in 30 seconds
+Latency: min 0.03ms; max 5.66ms; mean 0.03ms; std: 0.012ms (40.19%)
+Latency distribution: 25% under 0.025ms; 50% under 0.03ms; 75% under 0.035ms; 90% under 0.038ms; 99% under 0.044ms; 99.99% under 0.114ms
+Requests/sec: 32772.8
+Transfer/sec: 31.25MiB
 
 ```
 第二次
 ```
+will connect to: ('127.0.0.1', 25000)
+Sending 200000 messages
+Sending 200000 messages
+Sending 200000 messages
+600000 in 14.316159725189209
+41910.680763382596 requests/sec
+---
+990978 0.98KiB messages in 30 seconds
+Latency: min 0.03ms; max 1.15ms; mean 0.03ms; std: 0.005ms (16.59%)
+Latency distribution: 25% under 0.025ms; 50% under 0.03ms; 75% under 0.035ms; 90% under 0.038ms; 99% under 0.045ms; 99.99% under 0.202ms
+Requests/sec: 33032.6
+Transfer/sec: 31.5MiB
 
 ```
 第三次
 ```
+will connect to: ('127.0.0.1', 25000)
+Sending 200000 messages
+Sending 200000 messages
+Sending 200000 messages
+600000 in 14.586745500564575
+41133.23290495315 requests/sec
+---
+980106 0.98KiB messages in 30 seconds
+Latency: min 0.03ms; max 5.81ms; mean 0.03ms; std: 0.012ms (40.78%)
+Latency distribution: 25% under 0.025ms; 50% under 0.03ms; 75% under 0.035ms; 90% under 0.038ms; 99% under 0.046ms; 99.99% under 0.162ms
+Requests/sec: 32670.2
+Transfer/sec: 31.16MiB
+```
 
+10kb
+```
+922949 10.0KiB messages in 30 seconds
+Latency: min 0.03ms; max 4.14ms; mean 0.031ms; std: 0.008ms (27.48%)
+Latency distribution: 25% under 0.025ms; 50% under 0.031ms; 75% under 0.036ms; 90% under 0.039ms; 99% under 0.049ms; 99.99% under 0.161ms
+Requests/sec: 30764.97
+Transfer/sec: 300.44MiB
+```
+100kb
+```
+450081 100.0KiB messages in 30 seconds
+Latency: min 0.06ms; max 4.52ms; mean 0.063ms; std: 0.02ms (31.36%)
+Latency distribution: 25% under 0.056ms; 50% under 0.061ms; 75% under 0.067ms; 90% under 0.07ms; 99% under 0.111ms; 99.99% under 0.402ms
+Requests/sec: 15002.7
+Transfer/sec: 1465.11MiB
 ```
 
 ## boost.asio
@@ -101,7 +187,23 @@ Latency distribution: 25% under 0.055ms; 50% under 0.061ms; 75% under 0.066ms; 9
 Requests/sec: 47563.93
 Transfer/sec: 45.36MiB
 ```
+10Kb
+```
+2253 10.0KiB messages in 30 seconds
+Latency: min 0.09ms; max 47.84ms; mean 39.921ms; std: 1.49ms (3.73%)
+Latency distribution: 25% under 39.837ms; 50% under 39.984ms; 75% under 40.101ms; 90% under 40.145ms; 99% under 40.236ms; 99.99% under 47.845ms
+Requests/sec: 75.1
+Transfer/sec: 0.73MiB
+```
 
+100kb
+```
+2252 100.0KiB messages in 30 seconds
+Latency: min 0.48ms; max 47.89ms; mean 39.909ms; std: 1.885ms (4.72%)
+Latency distribution: 25% under 39.77ms; 50% under 39.985ms; 75% under 40.168ms; 90% under 40.214ms; 99% under 40.36ms; 99.99% under 47.895ms
+Requests/sec: 75.07
+Transfer/sec: 7.33MiB
+```
 ## Netty 1 thread
 第一次
 ```
@@ -127,6 +229,22 @@ Latency distribution: 25% under 0.055ms; 50% under 0.061ms; 75% under 0.066ms; 9
 Requests/sec: 47547.63
 Transfer/sec: 45.34MiB
 
+```
+10 kb
+```
+1377536 10.0KiB messages in 30 seconds
+Latency: min 0.03ms; max 54.86ms; mean 0.064ms; std: 0.113ms (176.59%)
+Latency distribution: 25% under 0.056ms; 50% under 0.061ms; 75% under 0.066ms; 90% under 0.07ms; 99% under 0.1ms; 99.99% under 5.425ms
+Requests/sec: 45917.87
+Transfer/sec: 448.42MiB
+```
+100kb
+```
+401695 100.0KiB messages in 30 seconds
+Latency: min 0.16ms; max 49.27ms; mean 0.219ms; std: 0.213ms (97.09%)
+Latency distribution: 25% under 0.199ms; 50% under 0.206ms; 75% under 0.216ms; 90% under 0.23ms; 99% under 0.334ms; 99.99% under 6.928ms
+Requests/sec: 13389.83
+Transfer/sec: 1307.6MiB
 ```
 
 ## Netty 2 thread
