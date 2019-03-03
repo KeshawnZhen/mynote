@@ -3,4 +3,5 @@ summary/Selector.md
 
 unix network programming/
 
-#compile-linker/object_file.md
+compile-linker/load.md
+compile-linker/pic/*.vsdx
