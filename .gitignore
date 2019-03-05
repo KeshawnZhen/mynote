@@ -3,5 +3,5 @@ summary/Selector.md
 
 unix network programming/
 
-compile-linker/load.md
+compile-linker/dynamic_linking.md
 compile-linker/pic/*.vsdx
