@@ -1,5 +1,5 @@
 # UTF
-Unicode的最初目标，是用1个16位的编码来为超过65000字符提供映射。但它不能覆盖全部历史上的文字，也不能解决传输的问题 (implantation head-ache's)，尤其在那些基于网络的应用中。已有的软件必须做大量的工作来程序16位的数据。 
+Unicode的最初目标，是用1个16位的编码来为超过65000字符提供映射。但它不能覆盖全部历史上的文字，也不能解决传输的问题 (implantation head-ache's)，尤其在那些基于网络的应用中。已有的软件必须做大量的工作来传输16位的数据。 
 
 因此，Unicode用一些基本的保留字符制定了三套编码方式。它们分别是UTF-8,UTF-16和UTF-32。在UTF－8中，字符是以8位序列来编码的，用一个或几个字节来表示一个字符。这种方式的最大好处，是UTF－8保留了ASCII字符的编码做为它的一部分，例如，在 UTF－8和ASCII中，“A”的编码都是0x41. 
 
@@ -11,12 +11,13 @@ UTF-8是变长编码，每个Unicode代码点按照不同范围，可以有1-3�
 ## 优点：
 UTF-8
 1. 兼容 ASCII
-1. 能适应许多 C 库中的 \0 结尾惯例2. 没有字节序问题
-2. 良好的多语种支持（相对 GBK 等跟语种绑定的编码方式）
-3. 以英文和西文符号比较多的场景下（例如 HTML/XML），编码较短
-4. 由于是变长，字符空间足够大，未来 Unicode 新标准收录更多字符，UTF-8 也能妥妥的兼容，因此不会再出现 UTF-16 那样的尴尬
-5. 不存在大小端字节序问题，信息交换时非常便捷
-6. 容错性高，局部的字节错误（丢失、增加、改变）不会导致连锁性的错误，因为 UTF-8 的字符边界很容易检测出来，这是一个巨大的优点
+2. 能适应许多 C 库中的 \0 结尾惯例
+3. 没有字节序问题
+4. 良好的多语种支持（相对 GBK 等跟语种绑定的编码方式）
+5. 以英文和西文符号比较多的场景下（例如 HTML/XML），编码较短
+6. 由于是变长，字符空间足够大，未来 Unicode 新标准收录更多字符，UTF-8 也能妥妥的兼容，因此不会再出现 UTF-16 那样的尴尬
+7. 不存在大小端字节序问题，信息交换时非常便捷
+8. 容错性高，局部的字节错误（丢失、增加、改变）不会导致连锁性的错误，因为 UTF-8 的字符边界很容易检测出来，这是一个巨大的优点
 
 UTF-16
 1. 在各大流行的操作系统中被广泛使用（windows、IOS、OSX等）
@@ -109,5 +110,99 @@ GBK是在国家标准GB2312基础上扩容后兼容GB2312的标准
 
 UTF-8编码的文字可以在各国各种支持UTF8字符集的浏览器上显示。比如，如果是UTF8编码，则在外国人的英文IE上也能显示中文，而无需他们下载IE的中文语言支持包。 所以，对于英文比较多的论坛 ，使用GBK则每个字符占用2个字节，而使用UTF-8英文却只占一个字节。
 
-UTF8是国际编码，它的通用性比较好，外国人也可以浏览论坛，GBK是国家编码，通用性比UTF8差，不过UTF8占用的数据库比GBK大
+UTF8是国际编码，它的通用性比较好，外国人也可以浏览论坛，GBK是国家编码，通用性比UTF8差。数据库中使用UTF8编码格式存储占用空间比GBK大
+
+
+
+# Java中编码
+```
+public static void main(String[] args) {
+    System.out.println(System.getProperty("file.encoding"));
+    try {
+        String str = new String("hhhh ty智障%shfu摸淑芬十分uif内服NSF黑");
+        // 1.以GBK编码方式获取str的字节数组，再用String有参构造函数构造字符串
+        System.out.println(new String(str.getBytes("GBK")));
+        // 2.以UTF-8编码方式获取str的字节数组，再以默认编码构造字符串
+        System.out.println(new String(str.getBytes("UTF-8")));
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+}
+```
+.java文件用UTF-8编码保存时的输出
+```
+UTF-8
+hhhh ty����%shfu�����ʮ��uif�ڷ�NSF��
+hhhh ty智障%shfu摸淑芬十分uif内服NSF黑
+```
+看到utf8的结果是正确的，但gbk是错误的
+
+.java文件用GBK编码保存时的输出
+```
+UTF-8
+hhhh ty????%shfu????????uif???NSF??
+hhhh ty����%shfu�����ʮ��uif�ڷ�NSF��
+```
+这个输出是什么鬼，gbk怎么也不对？在sun.nio.cs的包下就没找到gbk的类，是不是这个原因我暂时还不知道
+
+看看源码吧
+String.java
+```
+public byte[] getBytes(String charsetName)
+        throws UnsupportedEncodingException {
+    if (charsetName == null) throw new NullPointerException();
+    return StringCoding.encode(charsetName, value, 0, value.length);
+}
+```
+StringCoding.java
+```
+static byte[] encode(String charsetName, char[] ca, int off, int len)
+    throws UnsupportedEncodingException
+{
+    StringEncoder se = deref(encoder);
+    //默认使用ISO-8859-1
+    String csn = (charsetName == null) ? "ISO-8859-1" : charsetName;
+    if ((se == null) || !(csn.equals(se.requestedCharsetName())
+                            || csn.equals(se.charsetName()))) {
+        se = null;
+        try {
+            Charset cs = lookupCharset(csn);
+            if (cs != null)
+                se = new StringEncoder(cs, csn);
+        } catch (IllegalCharsetNameException x) {}
+        if (se == null)
+            throw new UnsupportedEncodingException (csn);
+        set(encoder, se);
+    }
+    return se.encode(ca, off, len);
+}
+```
+
+java.nio.charset.Charset
+```
+public static Charset defaultCharset() {
+    if (defaultCharset == null) {
+        synchronized (Charset.class) {
+            String csn = AccessController.doPrivileged(
+                new GetPropertyAction("file.encoding"));
+            Charset cs = lookup(csn);
+            if (cs != null)
+                defaultCharset = cs;
+            else
+                defaultCharset = forName("UTF-8");
+        }
+    }
+    return defaultCharset;
+}
+```
+
+总结一下：
+首先，Java源码文件。这些文件可以是任意字符编码的。然后在Java的Class文件里存储的字符串是UTF-8编码的。从Java源码文件到Java Class文件，中间会经过Java源码编译器（例如javac或ECJ）的编译。
+也就是说，是Java源码编译器负责将Java源码文件的编码转换为最终的UTF-8。导致乱码的不是Java源码编译器的“编码”（写出UTF-8）的过程，而是“解码”（读入Java源码内容）的过程。
+
+以javac为例，它有一个参数可以指定输入的Java源码文件的编码：
+>-encoding encodingSet the source file encoding name, such as EUC-JP and UTF-8. If -encoding is not specified, the platform default converter is used.
+
+关键在于“如果不指定encoding，则使用平台默认的转换器”。在简体中文的Windows上，平台默认编码会是GBK，那么javac就会默认假定输入的Java源码文件是以GBK编码的。javac能够正确读取文件内容并将其中的字符串以UTF-8输出到Class文件里，就跟自己写个程序以GBK读文件以UTF-8写文件一样。如果实际输入的确实是GBK编码（GBK兼容ASCII编码）的文件，那么一切都会正常。但如果实际输入的是别的编码的文件，例如超过了ASCII范围的UTF-8，那javac读进来的内容就会出问题，就“乱码”了。
+
 

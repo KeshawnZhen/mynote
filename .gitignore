@@ -4,4 +4,5 @@ summary/Selector.md
 unix network programming/
 
 compile-linker/dynamic_linking.md
+compile-linker/memory.md
 compile-linker/pic/*.vsdx
