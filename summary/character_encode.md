@@ -145,7 +145,7 @@ hhhh ty����%shfu�����ʮ��uif�ڷ�NSF��
 ```
 这个输出是什么鬼，gbk怎么也不对？在sun.nio.cs的包下就没找到gbk的类，是不是这个原因我暂时还不知道
 
-看看源码吧
+看看源码吧              
 String.java
 ```
 public byte[] getBytes(String charsetName)
@@ -196,7 +196,7 @@ public static Charset defaultCharset() {
 }
 ```
 
-总结一下：
+总结一下：              
 首先，Java源码文件。这些文件可以是任意字符编码的。然后在Java的Class文件里存储的字符串是UTF-8编码的。从Java源码文件到Java Class文件，中间会经过Java源码编译器（例如javac或ECJ）的编译。
 也就是说，是Java源码编译器负责将Java源码文件的编码转换为最终的UTF-8。导致乱码的不是Java源码编译器的“编码”（写出UTF-8）的过程，而是“解码”（读入Java源码内容）的过程。
 
