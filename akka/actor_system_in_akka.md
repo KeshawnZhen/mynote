@@ -250,13 +250,23 @@ public class WorkerActor extends UntypedActor {
 }
 ```
 
+程序流程图：            
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/company_model.jpg)
 
 
-2.Actor路径与地址
+这里主要是有两个知识点：          
+- 创建Actor获得ActorRef的两种方式
+- 根据Actor路径获得ActorRef
+
+**2.Actor路径与地址**
 
 ActorSystem中的路径类似Unix，每个ActorSystem都有一个根守护者，用`/`表示,在根守护者下有一个名user的Actor，它是所有system.actorOf()创建的父Actor，所以我们程序中bossActor的路径为：
 
-`akka://RobotTest/user/RobotActor`
+`/user/boss`
+
+地址顾名思义是Actor所在的位置，为什么要有地址这一个概念，这就是Akka强大的理念了，Akka中所有的东西都是被设计为在分布式环境下工作的，所以我们可以向任意位置的Actor发送消息（前提你得知道它在哪），这时候地址的作用就显现出来来，首先我们可以根据地址找到Actor在什么位置，再根据路径找到具体的Actor，比如我们示例程序中bossActor，它的完整位置是
+
+`akka://company-system/user/boss`
 
 其中akka代表纯本地的，Akka中默认远程Actor的位置一般用akka.tcp或者akka.udp开头，当然也可以使用第三方插件。
 
