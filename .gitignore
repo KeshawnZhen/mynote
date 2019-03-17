@@ -6,3 +6,4 @@ unix network programming/
 compile-linker/linux_shared_library.md
 
 compile-linker/pic/*.vsdx
+akka/pic/*.vsdx
