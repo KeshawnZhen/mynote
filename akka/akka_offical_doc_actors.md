@@ -305,6 +305,47 @@ static class ReceiveTimeoutActor extends AbstractActor {
 ```
 
 ### 定时消息
+可以通过直接使用调度程序将消息安排到稍后的时间点发送，但是当将actor中的周期性或单个消息发送到自己时，使用对命名named timers会更方便、更安全。当actor重新启动并由timer处理时，周期消息的生命周期可能很难管理。
+```
+import java.time.Duration;
+import akka.actor.AbstractActorWithTimers;
+
+static class MyActor extends AbstractActorWithTimers {
+
+  private static Object TICK_KEY = "TickKey";
+
+  private static final class FirstTick {}
+
+  private static final class Tick {}
+
+  public MyActor() {
+    getTimers().startSingleTimer(TICK_KEY, new FirstTick(), Duration.ofMillis(500));
+  }
+
+  @Override
+  public Receive createReceive() {
+    return receiveBuilder()
+        .match(
+            FirstTick.class,
+            message -> {
+              // do something useful here
+              getTimers().startPeriodicTimer(TICK_KEY, new Tick(), Duration.ofSeconds(1));
+            })
+        .match(
+            Tick.class,
+            message -> {
+              // do something useful here
+            })
+        .build();
+  }
+}
+```
+
+
+每个计时器都有一个键，可以替换或取消。它保证不会接收到来自具有相同密钥的计时器的前一个版本的消息，即使在取消该消息或启动新计时器时，它可能已经在邮箱中排队了。
+
+计时器被绑定到拥有它的参与者的生命周期，因此在重新启动或停止计时器时将自动取消计时器。注意，`TimerScheduler`不是线程安全的，也就是说，它只能在拥有它的actor使用。
+
 
 ### 停止Actor
 通过调用`ActoRefFactory`的`stop`方法（即`ActorContext`或`ActorSystem`）来停止actor。通常，上下文用于停止actor本身或子actor，以及停止顶级actor的系统。actor的实际终止是异步执行的，也就是说，`stop`可能会在参与者停止之前返回。
@@ -327,6 +368,55 @@ public class MyStoppingActor extends AbstractActor {
   }
 }
 ```
+`postStop()`钩子函数在actor完全停止后调用。可以用来清理资源:
+```
+@Override
+public void postStop() {
+  final String message = "stopped";
+  // don’t forget to think about who is the sender (2nd argument)
+  target.tell(message, getSelf());
+  final Object result = "";
+  target.forward(result, getContext());
+  target = null;
+}
+```
+还可以使用其他一些方法来关闭actor
+
+#### PoisonPill
+可以给actor发送一个`akka.actor.PoisonPill`，当消息被处理时将，actor停止。·将作为普通消息排队，并将在处理完已在邮箱中排队的消息之后再处理。
+```
+victim.tell(akka.actor.PoisonPill.getInstance(), ActorRef.noSender());
+```
+#### Killing an Actor
+还可以通过发送一个kill消息来“杀死”一个actor。与“PoisonPill”不同，这将导致actor抛出一个ActorKilledException，触发失败。actor将暂停运行，并询问其supervisor如何处理故障，这可能意味着重新启动actor，或完全终止actor。
+```
+victim.tell(akka.actor.Kill.getInstance(), ActorRef.noSender());
+
+// expecting the actor to indeed terminate:
+expectTerminated(Duration.ofSeconds(3), victim);
+```
+一般来说，设计与actor的交互时不建议过分依赖于`Kill`或`PoisonPill`。
+
+#### Graceful Stop
+如果需要等待终止或几个actor有序终止，Graceful stop将十分有用
+```
+import static akka.pattern.Patterns.gracefulStop;
+import akka.pattern.AskTimeoutException;
+import java.util.concurrent.CompletionStage;
+
+try {
+  CompletionStage<Boolean> stopped =
+      gracefulStop(actorRef, Duration.ofSeconds(5), Manager.SHUTDOWN);
+  stopped.toCompletableFuture().get(6, TimeUnit.SECONDS);
+  // the actor has been stopped
+} catch (AskTimeoutException e) {
+  // the actor wasn't stopped within 5 seconds
+}
+```
+#### Coordinated Shutdown
+
+
+
 
 ### Become/Unbecome
 可以使用become实现有限状态机。
