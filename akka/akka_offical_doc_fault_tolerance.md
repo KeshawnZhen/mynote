@@ -142,11 +142,17 @@ assert Await.result(ask(child, "get", 5000), timeout).equals(42);
 child.tell(new ArithmeticException(), ActorRef.noSender());
 assert Await.result(ask(child, "get", 5000), timeout).equals(42);
 ```
+
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/supervisor-stategy-resume.png)
+
 正如您所看到的，值42在错误处理指令之后仍然存在。现在，如果将失败改为更严重的NullPointerException，情况就不再是这样了:
 ```java
 child.tell(new NullPointerException(), ActorRef.noSender());
 assert Await.result(ask(child, "get", 5000), timeout).equals(0);
 ```
+
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/supervisor-stategy-restart.png)
+
 最后，如果出现致命的IllegalArgumentException，该子Actor将被Supervisor终止:
 ```java
 final TestProbe probe = new TestProbe(system);
@@ -155,5 +161,64 @@ child.tell(new IllegalArgumentException(), ActorRef.noSender());
 probe.expectMsgClass(Terminated.class);
 ```
 
-到目前为止，Supervisor完全不受子程序失败的影响，因为指令集确实处理了它。在异常的情况下，这将可能是错误的，Supervisor会升级故障。
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/supervisor-stategy-stop.png)
 
+到目前为止，Supervisor完全不受子程序失败的影响，因为指令集确实处理了它。在异常的情况下，这将可能是错误的，Supervisor会升级故障。
+```java
+child = (ActorRef) Await.result(ask(supervisor, Props.create(Child.class), 5000), timeout);
+probe.watch(child);
+assert Await.result(ask(child, "get", 5000), timeout).equals(0);
+child.tell(new Exception(), ActorRef.noSender());
+probe.expectMsgClass(Terminated.class);
+```
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/supervisor-stategy-terminated.png)
+
+
+surpervisor自己被顶级Actor监管。其默认策略是在所有异常情况下重新启动。而默认的重启指令将kill所有Actor，故重写一个supervisor来实验
+```java
+static class Supervisor2 extends AbstractActor {
+
+  private static SupervisorStrategy strategy =
+      new OneForOneStrategy(
+          10,
+          Duration.ofMinutes(1),
+          DeciderBuilder.match(ArithmeticException.class, e -> SupervisorStrategy.resume())
+              .match(NullPointerException.class, e -> SupervisorStrategy.restart())
+              .match(IllegalArgumentException.class, e -> SupervisorStrategy.stop())
+              .matchAny(o -> SupervisorStrategy.escalate())
+              .build());
+
+  @Override
+  public SupervisorStrategy supervisorStrategy() {
+    return strategy;
+  }
+
+
+  @Override
+  public Receive createReceive() {
+    return receiveBuilder()
+        .match(
+            Props.class,
+            props -> {
+              getSender().tell(getContext().actorOf(props), getSelf());
+            })
+        .build();
+  }
+
+  @Override
+  public void preRestart(Throwable cause, Optional<Object> msg) {
+    // do not kill all children, which is the default here
+  }
+}
+```
+有了这个监管者，子Actor在升级重启后仍然存活，正如在最后一次测试中所示:
+```java
+superprops = Props.create(Supervisor2.class);
+supervisor = system.actorOf(superprops);
+child = (ActorRef) Await.result(ask(supervisor, Props.create(Child.class), 5000), timeout);
+child.tell(23, ActorRef.noSender());
+assert Await.result(ask(child, "get", 5000), timeout).equals(23);
+child.tell(new Exception(), ActorRef.noSender());
+assert Await.result(ask(child, "get", 5000), timeout).equals(0);
+```
+![image](https://github.com/KeshawnZhen/mynote/blob/master/akka/pic/supervisor-stategy-nothing.png)
