@@ -258,6 +258,23 @@ public class WorkerActor extends UntypedActor {
 - 创建Actor获得ActorRef的两种方式
 - 根据Actor路径获得ActorRef
 
+运行结果
+```
+akka://company-system
+[INFO] [03/19/2019 19:39:50.558] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss] I must to do some thing,go,go,go!
+[INFO] [03/19/2019 19:39:50.558] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss] manager2
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss] manager1
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss] manager0
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-4] [akka://company-system/user/boss/manager0/worker] I have receive task
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-4] [akka://company-system/user/boss/manager0/worker] woker: worker
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss/manager1/worker] I have receive task
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-2] [akka://company-system/user/boss/manager1/worker] woker: worker
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-3] [akka://company-system/user/boss/manager2/worker] I have receive task
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-3] [akka://company-system/user/boss/manager2/worker] woker: worker
+[INFO] [03/19/2019 19:39:50.576] [company-system-akka.actor.default-dispatcher-8] [akka://company-system/user/boss] the project is done, we will earn more money
+```
+
+
 **2.Actor路径与地址**
 
 ActorSystem中的路径类似Unix，每个ActorSystem都有一个根守护者，用`/`表示,在根守护者下有一个名user的Actor，它是所有system.actorOf()创建的父Actor，所以我们程序中bossActor的路径为：
